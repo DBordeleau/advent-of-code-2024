@@ -1,6 +1,6 @@
 def main():
     safeCount = 0
-    with open('AdventOfCode\Day 2\input', 'r') as file:
+    with open('Day 2\input', 'r') as file:
         reports = [ line.split() for line in file ]
 
     for report in reports:

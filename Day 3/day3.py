@@ -1,7 +1,7 @@
 import re
 
 def main():
-    with open('AdventOfCode/Day 3/input', 'r') as file:
+    with open('Day 3\input', 'r') as file:
         txt = file.read()
 
     if not txt.startswith("do()"):
