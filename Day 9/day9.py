@@ -5,10 +5,9 @@ def main():
     
     file_blocks, free_blocks = getBlockLists(disk_map)
     blocks = createBlocks(file_blocks, free_blocks)
-    blocks = compressFiles(blocks)
-    print(blocks)
-    #result = checkSum(blocks)
-    #print(result)
+    blocks = moveFiles(blocks)
+    result = checkSum(blocks)
+    print(result)
 
 # Splits the disk map into 2 int lists representing the file blocks and the free space blocks
 def getBlockLists(disk_map):
@@ -27,53 +26,52 @@ def getBlockLists(disk_map):
 def createBlocks(file_blocks, free_blocks):
     block_list = []
     for i in range(len(file_blocks)):
-        block_list.append(str(i) * file_blocks[i])
+        block_list.append([str(i)] * file_blocks[i])
         if i < len(free_blocks):  # free_blocks list has 1 less element than file_blocks
             block_list.append(["."] * free_blocks[i])
     return block_list
 
-# Moves file blocks into valid memory blocks and returns the compressed list
-def compressFiles(block_list):
-    i = 0
-    j = len(block_list) - 1
-    while j >= 0:
-        if "." not in block_list[j]: # if j is a file
-            while j > i:
-                # if the memory block is at least as long as the file move the file into the memory block
-                if all(char == "." for char in block_list[i]) and (len(block_list[i]) >= len(block_list[j])):
-                    file_len = len(block_list[j])
-                    memory_len = len(block_list[i])
+# Moves file blocks into valid memory blocks and returns the new list
+def moveFiles(block_list):
+    # Move files by descending ID
+    for file_index in range(len(block_list) - 1, -1, -1):
+        file_block = block_list[file_index]
+        
+        # Skip free blocks
+        if all(char == "." for char in file_block): continue
+        
+        file_len = len(file_block)
+        
+        # Find a block of free memory that can fit the file
+        for i in range(file_index): # Only check free_blocks that appear before the file block
+            if "." in block_list[i] and len(block_list[i]) >= file_len:
+                # Move the file into the free block
+                free_len = len(block_list[i])
+                block_list[i] = file_block
+                block_list[file_index] = ["."] * file_len
+                
+                # Handle remaining free space
+                remaining_mem = free_len - file_len
+                if remaining_mem > 0:
+                    # Insert the remaining memory as a new free block
+                    block_list.insert(i + 1, ["."] * remaining_mem)
+                break # move on to the next file
 
-                    # move file into memory block index
-                    block_list[i] = block_list[j]
-                    
-                    # calculate how many "." remain in memory block, if any
-                    remaining_mem = memory_len - file_len
-                    if remaining_mem > 0:
-                        # add the remaining memory back into the list after the file
-                        for _ in range(remaining_mem):
-                            block_list.insert(i + 1, ".")
-                    # replace file indices with moved memory space
-                    del block_list[j]
-                    for _ in range(file_len):
-                        block_list.insert(j, ".")
-                    break
-                i += 1
-        j -= 1
-    return block_list
+    # Expand every file_block so every ID occupies its own index and every free_block so every "." occupies its own index
+    expanded_block_list = []
+    for block in block_list:
+        expanded_block_list.extend(block)
+    return expanded_block_list
 
 # Multiplies file ID by its index and returns the sum of these values for all file blocks
 def checkSum(block_list):
     result = 0
     for i, block in enumerate(block_list):
-        if "." not in block:
+        if block != ".":
             result += i * int(block)
     return result
 
 main()
-
-
-
 
 """
 Part 1 solution:
@@ -85,7 +83,7 @@ def main():
     
     file_blocks, free_blocks = getBlockLists(disk_map)
     blocks = createBlocks(file_blocks, free_blocks)
-    blocks = compressFiles(blocks)
+    blocks = moveFiles(blocks)
     result = checkSum(blocks)
     print(result)
 
@@ -112,7 +110,7 @@ def createBlocks(file_blocks, free_blocks):
     return block_list
 
 # Swaps file blocks from the end of the list to the first available free space
-def compressFiles(block_list):
+def moveFiles(block_list):
     i = 0
     j = len(block_list) - 1
     while i < j:
