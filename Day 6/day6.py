@@ -1,3 +1,4 @@
+# https://adventofcode.com/2024/day/6
 guardPath = []
 def main():
     guardMap = []

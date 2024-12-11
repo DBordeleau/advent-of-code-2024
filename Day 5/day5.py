@@ -1,3 +1,4 @@
+# https://adventofcode.com/2024/day/5
 def main():
     pageMap = {} # page -> list of pages that must come before it
     updateList = []

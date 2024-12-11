@@ -1,3 +1,4 @@
+# https://adventofcode.com/2024/day/2
 def main():
     safeCount = 0
     with open('Day 2\input', 'r') as file:

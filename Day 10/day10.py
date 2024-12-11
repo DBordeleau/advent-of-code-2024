@@ -1,3 +1,43 @@
+# https://adventofcode.com/2024/day/10
+def main():
+    grid = getGrid()
+
+    total_ratings = 0
+    for row in range(len(grid)):
+        for col in range(len(grid[row])):
+            if grid[row][col] == 0:
+                total_ratings += walkAndCount(row, col, grid)
+    print(total_ratings)
+
+def getGrid():
+    with open('Day 10/input', 'r') as file:
+        grid = [list(map(int, line)) for line in file.read().splitlines()]
+    return grid
+
+# bfs that tries to traverse every valid path -- no need for adjacency representation from part 1
+def walkAndCount(row, col, grid):
+    height = grid[row][col]
+    if height == 9: # base case: return 1 for the rating
+        return 1
+    
+    rating = 0
+
+    if col > 0 and grid[row][col - 1] == height + 1:
+        rating += walkAndCount(row, col - 1, grid)
+    if row > 0 and grid[row - 1][col] == height + 1:
+        rating += walkAndCount(row - 1, col, grid)
+    if col < len(grid[row]) - 1 and grid[row][col + 1] == height + 1:
+        rating += walkAndCount(row, col + 1, grid)
+    if row < len(grid[row]) - 1 and grid[row + 1][col] == height + 1:
+        rating += walkAndCount(row + 1, col, grid)
+
+    return rating
+
+main()
+
+"""
+Part 1 solution:
+
 def main():
     grid = getGrid()
     adjacency_dict, trailheads = buildAdjacencyList(grid)
@@ -72,4 +112,4 @@ def scoreTrails(adjacency_dict, trailheads, grid):
         score += len(reachable_peaks[trailhead])
     return score
 
-main()
+main()"""

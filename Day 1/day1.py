@@ -1,3 +1,4 @@
+# https://adventofcode.com/2024/day/1
 def main():
     with open('Day 1\input', 'r') as file:
         nums1, nums2 = zip(*(line.split() for line in file))

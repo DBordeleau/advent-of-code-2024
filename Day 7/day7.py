@@ -1,3 +1,4 @@
+# https://adventofcode.com/2024/day/7
 def main():
     targets = []
     numList = []

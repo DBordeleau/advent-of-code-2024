@@ -1,3 +1,4 @@
+# https://adventofcode.com/2024/day/9
 def main():
     with open('Day 9/input', 'r') as file:
         disk_map = file.read()

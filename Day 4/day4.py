@@ -1,3 +1,4 @@
+# https://adventofcode.com/2024/day/4
 def main():
     grid = []
     with open('Day 4\input', 'r') as file:
